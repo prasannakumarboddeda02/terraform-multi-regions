@@ -57,7 +57,6 @@ resource "aws_iam_role" "replication_role" {
   })
 }
 
-# IAM Policy for replication access
 resource "aws_iam_policy" "replication_policy" {
   name = "s3-replication-policy"
 
@@ -89,7 +88,6 @@ resource "aws_iam_policy" "replication_policy" {
   })
 }
 
-# Attach the policy to the role
 resource "aws_iam_role_policy_attachment" "replication_attachment" {
   role       = aws_iam_role.replication_role.name
   policy_arn = aws_iam_policy.replication_policy.arn
@@ -104,16 +102,15 @@ resource "aws_s3_bucket_replication_configuration" "replication" {
     status = "Enabled"
 
     filter {
-      prefix = "" # replicate all objects
+      prefix = ""
     }
 
     destination {
       bucket        = "arn:aws:s3:::${aws_s3_bucket.destination_bucket.bucket}"
       storage_class = "STANDARD"
     }
-      # Add this section to handle delete marker replication
       delete_marker_replication {
-      status = "Enabled"  # Can also be set to "Disabled" depending on your use case
+      status = "Enabled" 
       }
     }
   }
